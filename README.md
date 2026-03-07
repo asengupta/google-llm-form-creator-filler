@@ -1,6 +1,6 @@
 # Form Filler
 
-Create Google Forms and auto-fill them with LLM-generated responses.
+Create Google Forms and auto-fill them with LLM-generated responses using Claude.
 
 ## Setup
 
@@ -10,7 +10,7 @@ Create Google Forms and auto-fill them with LLM-generated responses.
 pip install google-auth google-auth-oauthlib google-api-python-client anthropic requests
 ```
 
-### Google Cloud (for form creation only)
+### Google Cloud (for form creation)
 
 1. Create a project in [Google Cloud Console](https://console.cloud.google.com)
 2. Enable the **Google Forms API**
@@ -27,7 +27,21 @@ export ANTHROPIC_API_KEY="your-key"
 
 ## Usage
 
-### Create a form
+### Create and fill a form (end-to-end)
+
+Creates a Brief Resilience Scale (BRS) form and fills it with LLM-generated responses:
+
+```bash
+python create_and_fill.py <num_responses>
+```
+
+Example:
+
+```bash
+python create_and_fill.py 10
+```
+
+### Create a form only
 
 Edit the questions in `create_form.py` and run:
 
@@ -35,7 +49,7 @@ Edit the questions in `create_form.py` and run:
 python create_form.py
 ```
 
-### Fill a form
+### Fill an existing form
 
 ```bash
 python fill_form.py <form_url> <num_responses>
@@ -47,7 +61,8 @@ Example:
 python fill_form.py "https://docs.google.com/forms/d/e/FORM_ID/viewform" 10
 ```
 
-The script will:
-1. Fetch the form and discover all fields and options
-2. Generate a unique persona and realistic answers for each response using Claude
-3. Submit each response automatically
+## How it works
+
+1. `create_form.py` — Creates a Google Form via the Forms API
+2. `fill_form.py` — Fetches a form's HTML, extracts field IDs and options, uses Claude to generate a unique persona and realistic answers for each response, and submits via POST
+3. `create_and_fill.py` — Combines both: creates the form, then fills it
